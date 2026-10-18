@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM BREACH</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            overflow: hidden;
+            font-family: 'Courier New', Courier, monospace;
+            color: #fff;
+            cursor: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        #terminal {
+            position: absolute;
+            inset: 0;
+            padding: 5px 10px;
+            font-size: 11px; /* Шрифт еще меньше для объема */
+            line-height: 1.0;
+            font-weight: 400;
+            word-wrap: break-word;
+            overflow: hidden;
+            z-index: 1;
+            background: radial-gradient(circle, rgba(0,0,0,0) 20%, rgba(0,0,0,0.95) 100%);
+        }
+
+        .log-line {
+            opacity: 0.9;
+            text-shadow: 0 0 1px currentColor;
+            white-space: pre-wrap;
+            word-break: break-all;
+            margin-bottom: 0px;
+        }
+
+        .c-white { color: #ffffff; }
+        .c-yellow { color: #ffcc00; }
+        .c-red { color: #ff1a1a; }
+        .c-green { color: #00ff00; font-weight: bold; text-shadow: 0 0 5px #00ff00; }
+
+        #whiteout {
+            position: fixed;
+            inset: 0;
+            background-color: #ffffff;
+            z-index: 100;
+            display: none;
+        }
+
+        #final-screen {
+            position: fixed;
+            inset: 0;
+            background-color: #000000;
+            z-index: 50;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.1s ease;
+        }
+
+        #final-screen h1 {
+            font-size: clamp(30px, 8vw, 80px);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 900;
+            color: #ffffff !important;
+            text-shadow: none !important;
+            text-align: center;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .footer-credit {
+            position: absolute;
+            bottom: 30px;
+            width: 100%;
+            text-align: center;
+            color: #666666;
+            font-size: 14px;
+            font-family: 'Courier New', Courier, monospace;
+            letter-spacing: 1px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="terminal"></div>
+    <div id="whiteout"></div>
+    
+    <div id="final-screen">
+        <h1>¡Bitch Was Hacked¡</h1>
+        <div class="footer-credit">Hacked by @loggfucker_bot</div>
+    </div>
+
+    <script>
+        const terminal = document.getElementById('terminal');
+        const whiteout = document.getElementById('whiteout');
+        const finalScreen = document.getElementById('final-screen');
+
+        // Расширенные словари
+        const yellowPhrases = [
+            "WARNING: UNKNOWN PROCESS DETECTED", "UNAUTHORIZED ACCESS ATTEMPT", "SYS_INTEGRITY COMPROMISED",
+            "ROUTING THROUGH PROXY...", "BYPASSING FIREWALL...", "DECRYPTING USER DATA...",
+            "PACKET INJECTION SUCCESSFUL", "SIGNAL INTERCEPTED", "MEMORY DUMP INITIATED",
+            "OVERRIDING SAFETY PROTOCOLS", "UNKNOWN HANDLE RESOLVED", "THREAD SUSPENDED",
+            "KERNEL_DEBUG_ON", "TRACE_ROUTE_ESTABLISHED", "DUMPING_HASHES...",
+            "PORT_SCAN_COMPLETE", "SOCKET_BOUND_0x4A", "INJECTING_PAYLOAD..."
+        ];
+        let yellowIndex = 0;
+
+        const redPhrases = [
+            "0xFAULT // SEGMENTATION VIOLATION", "!! ERR_0x8F9C: STACK CORRUPTION", "SYS_HALT: UNRECOVERABLE @ 0x00A1",
+            "### CRITICAL_FAILURE ###", "0xDEADBEEF :: ACCESS VIOLATION", "!! OVERFLOW DETECTED IN SECTOR_7",
+            "ERR: INVALID_POINTER @ 0x4F2A", ">> NULL_PTR_EXCEPTION <<", "0xC000021A :: FATAL_SYSTEM_ERROR",
+            "!! PANIC: UNHANDLED_EXCEPTION", "DATA_CORRUPTION AT 0x7FFFFFFF", "!! KERNEL_TRAP_0x13",
+            "SYS_ERR: BUFFER_UNDERRUN", "0x0BADF00D :: MEMORY_LEAK", "STACK_TRACE_BREACH",
+            "ILLEGAL_INSTRUCTION_0xCC", "PAGE_FAULT_IN_NONPAGED"
+        ];
+        let redIndex = 0;
+
+        const hexChars = "0123456789ABCDEF";
+        const symbols = "!@#$%^&*()_+-=[]{}|;:,.<>?/\\~`";
+
+        function getRandomHex(len) {
+            let res = '';
+            for (let i = 0; i < len; i++) res += hexChars[Math.floor(Math.random() * 16)];
+            return res;
+        }
+
+        function getRandomSymbol(len) {
+            let res = '';
+            for (let i = 0; i < len; i++) res += symbols[Math.floor(Math.random() * symbols.length)];
+            return res;
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        shuffle(yellowPhrases);
+        shuffle(redPhrases);
+
+        function generateLine() {
+            const line = document.createElement('div');
+            line.className = 'log-line';
+
+            const type = Math.random();
+            
+            if (type < 0.25) { // Чуть больше красного
+                line.classList.add('c-red');
+                if (redIndex < redPhrases.length) {
+                    let phrase = redPhrases[redIndex++];
+                    const garbageLen = Math.floor(Math.random() * 20) + 10;
+                    phrase += " " + (Math.random() < 0.5 ? getRandomHex(garbageLen) : getRandomSymbol(garbageLen));
+                    line.textContent = phrase;
+                } else {
+                    line.textContent = `[!] SYS_CRITICAL_ERROR_0x${getRandomHex(4)}`; 
+                }
+            } else if (type < 0.45) {
+                line.classList.add('c-yellow');
+                if (yellowIndex < yellowPhrases.length) {
+                    line.textContent = `[*] ${yellowPhrases[yellowIndex++]}`;
+                } else {
+                    line.textContent = `[*] TRACE_ROUTE_0x${getRandomHex(4)}`;
+                }
+            } else {
+                line.classList.add('c-white');
+                let dump = '';
+                // Много текста в строке
+                for(let i=0; i<20; i++) {
+                    dump += getRandomHex(4) + ' ';
+                }
+                line.textContent = dump;
+            }
+            
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+
+            // Держим ОЧЕНЬ много строк в DOM, чтобы экран был забит под завязку
+            if (terminal.childNodes.length > 300) {
+                terminal.removeChild(terminal.firstChild);
+            }
+        }
+
+        // --- ЛОГИКА АНИМАЦИИ ---
+        
+        let isPaused = false;
+        let timeout;
+        let baseSpeed = 15; 
+
+        function loop() {
+            if (!isPaused) {
+                // ОГРОМНАЯ пачка строк за раз (от 5 до 15)
+                const linesToGen = Math.floor(Math.random() * 11) + 5;
+                for(let i=0; i<linesToGen; i++) {
+                    generateLine();
+                }
+            }
+            
+            // 1. ЧАСТЫЕ ЗАВИСАНИЯ НА 1 СЕКУНДУ (5% шанс)
+            if (Math.random() < 0.05 && !isPaused) {
+                isPaused = true;
+                setTimeout(() => { isPaused = false; }, 1000); // Стоим ровно 1 секунду
+            }
+
+            // 2. ЧАСТЫЕ РЫВКИ (15% шанс на короткую паузу)
+            if (Math.random() < 0.15 && !isPaused) {
+                timeout = setTimeout(loop, 100 + Math.random() * 200);
+                return;
+            }
+
+            // 3. ПЛАВНОЕ УСКОРЕНИЕ / ЗАМЕДЛЕНИЕ
+            baseSpeed += (Math.random() - 0.5) * 6;
+            if (baseSpeed < 2) baseSpeed = 2;
+            if (baseSpeed > 40) baseSpeed = 40;
+
+            const jitter = (Math.random() - 0.5) * 8;
+            const finalDelay = Math.max(1, baseSpeed + jitter);
+
+            timeout = setTimeout(loop, finalDelay);
+        }
+
+        loop();
+
+        // --- ТАЙМИНГИ КОНЕЧНОЙ ФАЗЫ ---
+        
+        setTimeout(() => {
+            // 1. Резко останавливаем поток
+            clearTimeout(timeout);
+            isPaused = true;
+
+            // 2. Добавляем зеленую строку успеха в самый низ
+            const successLine = document.createElement('div');
+            successLine.className = 'log-line c-green';
+            successLine.textContent = "[+] hacked succes";
+            terminal.appendChild(successLine);
+            terminal.scrollTop = terminal.scrollHeight;
+
+            // 3. ЖДЕМ 2 СЕКУНДЫ (текст стоит с зеленой строкой внизу)
+            setTimeout(() => {
+                // 4. ВСПЫШКА БЕЛОГО ЭКРАНА
+                whiteout.style.display = 'block';
+                if (navigator.vibrate) navigator.vibrate(100);
+
+                // 5. Белый экран висит 1.2 секунды
+                setTimeout(() => {
+                    whiteout.style.display = 'none';
+                    terminal.style.display = 'none';
+                    
+                    finalScreen.style.display = 'flex';
+                    
+                    if (navigator.vibrate) navigator.vibrate([150, 100, 300]);
+
+                }, 1200);
+            }, 2000); 
+
+        }, 7000); // Лента бежит 7 секунд
+    </script>
+</body>
+  </html>
